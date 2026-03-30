@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Referências Poços Artesianos - Fazenda Oásis</title>
+    <title>Gestão Poços Artesianos - Fazenda Oásis</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- Bibliotecas para Exportação -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
@@ -26,49 +25,69 @@
             border-bottom: 4px solid #1e40af;
         }
 
-        /* Estilo dos Flash Cards */
         .flash-card {
             border-radius: 1.25rem;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .flash-card:hover {
+            transform: translateY(-2px);
         }
 
         .data-tag {
             background: #f8fafc;
             border: 1px solid #f1f5f9;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
 
         .data-tag-label {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .data-tag-value {
-            font-size: 17px; /* Letra maior para clareza */
+            font-size: 15px;
             font-weight: 700;
             color: #0f172a;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .input-group input, .input-group select {
+            padding-left: 44px !important;
         }
 
         /* Cores Temáticas */
@@ -77,19 +96,14 @@
         .bg-power { background: #fffbeb; color: #d97706; }
         .bg-depth { background: #f0fdf4; color: #16a34a; }
         .bg-flow  { background: #f5f3ff; color: #7c3aed; }
+        .bg-stop  { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
 
-        /* Área de Exportação Otimizada para Celular/WhatsApp */
         #exportArea {
             position: absolute;
             left: -9999px;
             top: -9999px;
-            width: 600px; /* Largura reduzida para preencher melhor a tela do celular */
+            width: 650px;
             background: #ffffff;
-        }
-
-        .export-card-full {
-            border: 2px solid #e2e8f0;
-            margin-bottom: 20px;
         }
 
         .official-footer {
@@ -101,21 +115,26 @@
             font-weight: 800;
             color: #475569;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
     </style>
 </head>
 <body class="min-h-screen pb-20">
 
-    <!-- Header Principal -->
     <header class="header-bg text-white shadow-xl mb-10">
         <div class="max-w-[1400px] mx-auto px-6 py-10">
             <div class="flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-1">Poços Artesianos</h1>
-                    <div class="flex items-center gap-3">
-                        <span class="bg-blue-500 text-white text-[10px] font-black px-3 py-1 rounded-full">ATIVOS OFICIAIS</span>
-                        <h2 class="text-xl font-semibold text-blue-100/90 tracking-tight">Fazenda Oásis</h2>
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-600/30 p-4 rounded-2xl border border-white/10">
+                        <i class="fas fa-bore-hole text-4xl text-blue-400"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-1">
+                            <i class="fas fa-bore-hole mr-2 opacity-50"></i>Poços Artesianos
+                        </h1>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-full">CONTROLE DE ATIVOS</span>
+                            <h2 class="text-xl font-semibold text-blue-100/90 tracking-tight">Fazenda Oásis</h2>
+                        </div>
                     </div>
                 </div>
                 <img src="https://i.imgur.com/rB1Lk8y.png" alt="Logo" class="w-20 h-20 object-contain">
@@ -124,34 +143,34 @@
     </header>
 
     <div class="max-w-[1400px] mx-auto px-6">
-        <!-- Barra de Ações -->
         <div class="flex flex-wrap gap-3 mb-10 justify-end">
             <button onclick="exportarExcel()" class="bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-6 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-2 transition-all text-xs uppercase">
                 <i class="fas fa-file-excel text-green-600"></i>
-                <span>Planilha</span>
+                <span>Exportar Dados</span>
             </button>
             <button onclick="exportar('jpg')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg flex items-center space-x-3 transition-all text-sm uppercase tracking-wider">
                 <i class="fab fa-whatsapp text-lg"></i>
-                <span>Gerar Foto p/ WhatsApp</span>
+                <span>Gerar Relatório Foto</span>
             </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Formulário de Cadastro -->
+            <!-- Formulário -->
             <div class="lg:col-span-4">
                 <div class="bg-white rounded-3xl p-8 shadow-xl border border-slate-200 sticky top-10">
                     <h2 id="formTitle" class="text-lg font-black text-slate-800 mb-8 flex items-center uppercase">
                         <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
-                        Novo Poço
+                        Novo Registro
                     </h2>
                     
                     <form id="pocoForm" class="space-y-4">
                         <input type="hidden" id="editId" value="">
 
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Número do Poço</label>
-                                <select id="bomba" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold text-slate-700 bg-white">
+                            <div class="input-group">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Identificação</label>
+                                <i class="fas fa-hashtag"></i>
+                                <select id="bomba" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold text-slate-700 bg-white appearance-none">
                                     <script>
                                         for(let i=1; i<=20; i++) {
                                             let p = `Poço ${String(i).padStart(2, '0')}`;
@@ -161,15 +180,48 @@
                                 </select>
                             </div>
 
-                            <input type="text" id="marca" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold uppercase" placeholder="MARCA DA BOMBA">
-                            <input type="text" id="modelo" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold uppercase" placeholder="MODELO TÉCNICO">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="input-group">
+                                    <i class="fas fa-industry"></i>
+                                    <input type="text" id="marca" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold uppercase" placeholder="MARCA">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-microchip"></i>
+                                    <input type="text" id="modelo" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold uppercase" placeholder="MODELO">
+                                </div>
+                            </div>
                             
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="text" id="cv" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold" placeholder="POTÊNCIA (CV)">
-                                <input type="number" id="profundidade" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold" placeholder="PROF. (M)">
+                                <div class="input-group">
+                                    <i class="fas fa-bolt"></i>
+                                    <input type="text" id="cv" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold" placeholder="POTÊNCIA (CV)">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-ruler-vertical"></i>
+                                    <input type="number" id="profundidade" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold" placeholder="PROF. (M)">
+                                </div>
                             </div>
 
-                            <input type="number" id="vazao" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold text-blue-600" placeholder="VAZÃO INICIAL (L/H)">
+                            <div class="input-group">
+                                <i class="fas fa-droplet text-blue-500"></i>
+                                <input type="number" id="vazao" required class="w-full px-4 py-4 rounded-xl border border-slate-200 font-bold text-blue-600" placeholder="VAZÃO INICIAL (L/H)">
+                            </div>
+
+                            <!-- Relatar Parada Separado em Data e Horário -->
+                            <div class="pt-4 border-t border-slate-100">
+                                <label class="block text-[10px] font-black text-red-500 uppercase mb-2 ml-1">Relatar Parada (Opcional)</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="input-group">
+                                        <i class="fas fa-calendar-day text-red-400"></i>
+                                        <input type="date" id="dataParadaDia" class="w-full px-4 py-4 rounded-xl border border-red-100 bg-red-50/30 font-bold text-slate-700 text-sm">
+                                    </div>
+                                    <div class="input-group">
+                                        <i class="fas fa-clock text-red-400"></i>
+                                        <input type="time" id="dataParadaHora" class="w-full px-4 py-4 rounded-xl border border-red-100 bg-red-50/30 font-bold text-slate-700 text-sm">
+                                    </div>
+                                </div>
+                                <p class="text-[9px] text-slate-400 mt-1 ml-1">* Deixe em branco se o poço estiver funcionando</p>
+                            </div>
                         </div>
 
                         <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-black text-white font-black py-5 rounded-2xl shadow-lg transition-all uppercase text-sm mt-4">
@@ -182,36 +234,36 @@
                 </div>
             </div>
 
-            <!-- Lista de Cards -->
+            <!-- Lista -->
             <div class="lg:col-span-8">
+                <div class="mb-6 flex items-center justify-between px-2">
+                    <h3 class="font-black text-slate-400 uppercase text-xs tracking-widest flex items-center gap-2">
+                        <i class="fas fa-bore-hole"></i> Histórico de Poços
+                    </h3>
+                </div>
                 <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 
                 <div id="emptyState" class="flex flex-col items-center justify-center py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-                    <i class="fas fa-droplet text-slate-200 text-6xl mb-4"></i>
-                    <p class="text-slate-400 font-black uppercase text-[10px] tracking-widest">Aguardando registros...</p>
+                    <i class="fas fa-bore-hole text-slate-200 text-6xl mb-4"></i>
+                    <p class="text-slate-400 font-black uppercase text-[10px] tracking-widest">Nenhum poço registrado no sistema</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ÁREA DE EXPORTAÇÃO (FORMATO VERTICAL P/ WHATSAPP) -->
+    <!-- Exportação -->
     <div id="exportArea">
         <div class="header-bg p-10 text-white flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-black uppercase">Relatório de Ativos</h1>
-                <h2 class="text-lg opacity-80">Fazenda Oásis • Dados Técnicos</h2>
+                <h2 class="text-lg opacity-80">Fazenda Oásis • Monitoramento de Poços</h2>
                 <p id="exportTimestamp" class="text-[10px] mt-2 font-bold opacity-60"></p>
             </div>
             <img src="https://i.imgur.com/rB1Lk8y.png" style="width: 80px; height: 80px;">
         </div>
-        
-        <div class="p-8 bg-white" id="exportList">
-            <!-- Cards entrarão aqui em coluna única -->
-        </div>
-
+        <div class="p-8 bg-white" id="exportList"></div>
         <div class="official-footer">
-            <p>Sistema de Gestão de Poços - Fazenda Oásis</p>
-            <p class="text-[10px] mt-1 text-blue-600">Documento de Referência Interna</p>
+            <p>Fazenda Oásis - Gestão de Infraestrutura Hídrica</p>
         </div>
     </div>
 
@@ -219,16 +271,22 @@
         const cardsGrid = document.getElementById('cardsGrid');
         const exportList = document.getElementById('exportList');
         const emptyState = document.getElementById('emptyState');
-        const editIdInput = document.getElementById('editId');
-        const formTitle = document.getElementById('formTitle');
-        const submitBtn = document.getElementById('submitBtn');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        
-        let registros = [];
+        let registros = JSON.parse(localStorage.getItem('oasis_pocos_v2')) || [];
+
+        // Atualizar o tempo a cada minuto para as paradas
+        setInterval(render, 60000);
 
         document.getElementById('pocoForm').addEventListener('submit', e => {
             e.preventDefault();
-            const currentEditId = editIdInput.value;
+            const currentEditId = document.getElementById('editId').value;
+            
+            const dia = document.getElementById('dataParadaDia').value;
+            const hora = document.getElementById('dataParadaHora').value;
+            let dataParadaFinal = null;
+            
+            if (dia && hora) {
+                dataParadaFinal = `${dia}T${hora}`;
+            }
 
             const reg = {
                 id: currentEditId ? parseInt(currentEditId) : Date.now(),
@@ -237,7 +295,8 @@
                 modelo: document.getElementById('modelo').value.toUpperCase(),
                 cv: document.getElementById('cv').value,
                 profundidade: document.getElementById('profundidade').value,
-                vazao: document.getElementById('vazao').value
+                vazao: document.getElementById('vazao').value,
+                dataParada: dataParadaFinal 
             };
             
             if (currentEditId) {
@@ -247,70 +306,123 @@
                 registros.push(reg);
             }
             
-            render();
+            saveAndRender();
             resetForm();
         });
 
+        function saveAndRender() {
+            localStorage.setItem('oasis_pocos_v2', JSON.stringify(registros));
+            render();
+        }
+
         function resetForm() {
             document.getElementById('pocoForm').reset();
-            editIdInput.value = "";
-            formTitle.innerHTML = `<i class="fas fa-plus-circle text-blue-600 mr-3"></i> Novo Poço`;
-            submitBtn.innerText = "Salvar Ativo";
-            cancelEditBtn.classList.add('hidden');
+            document.getElementById('editId').value = "";
+            document.getElementById('formTitle').innerHTML = `<i class="fas fa-plus-circle text-blue-600 mr-3"></i> Novo Registro`;
+            document.getElementById('submitBtn').innerText = "Salvar Ativo";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
         function editarRegistro(id) {
             const reg = registros.find(r => r.id === id);
             if (!reg) return;
-            editIdInput.value = reg.id;
+            document.getElementById('editId').value = reg.id;
             document.getElementById('bomba').value = reg.bomba;
             document.getElementById('marca').value = reg.marca;
             document.getElementById('modelo').value = reg.modelo;
             document.getElementById('cv').value = reg.cv;
             document.getElementById('profundidade').value = reg.profundidade;
             document.getElementById('vazao').value = reg.vazao;
-            formTitle.innerHTML = `<i class="fas fa-edit text-amber-500 mr-3"></i> Editando Ativo`;
-            submitBtn.innerText = "Atualizar Dados";
-            cancelEditBtn.classList.remove('hidden');
+            
+            if (reg.dataParada) {
+                const [dia, resto] = reg.dataParada.split('T');
+                document.getElementById('dataParadaDia').value = dia;
+                document.getElementById('dataParadaHora').value = resto.substring(0, 5);
+            } else {
+                document.getElementById('dataParadaDia').value = "";
+                document.getElementById('dataParadaHora').value = "";
+            }
+            
+            document.getElementById('formTitle').innerHTML = `<i class="fas fa-edit text-amber-500 mr-3"></i> Editar Poço`;
+            document.getElementById('submitBtn').innerText = "Atualizar Dados";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function excluirRegistro(id) {
-            if(confirm("Excluir este poço do histórico?")) {
+            if(confirm("Deseja remover este poço?")) {
                 registros = registros.filter(r => r.id !== id);
-                render();
+                saveAndRender();
             }
+        }
+
+        function calcularTempoParado(dataISO) {
+            if (!dataISO) return null;
+            const parada = new Date(dataISO);
+            const agora = new Date();
+            const diff = agora - parada;
+            
+            if (diff <= 0) return "Parada programada";
+
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            return `${dias}d ${horas}h ${minutos}m parado`;
         }
 
         function render() {
             emptyState.classList.toggle('hidden', registros.length > 0);
             const sorted = [...registros].sort((a, b) => a.bomba.localeCompare(b.bomba));
             
-            // Grid do Site (2 colunas)
             cardsGrid.innerHTML = sorted.map(r => generateCardHtml(r, true)).join('');
-            
-            // Lista de Exportação (1 coluna larga p/ WhatsApp)
             exportList.innerHTML = sorted.map(r => generateCardHtml(r, false)).join('');
-            
-            document.getElementById('exportTimestamp').innerText = `DATA: ${new Date().toLocaleString('pt-BR')}`;
+            document.getElementById('exportTimestamp').innerText = `RELATÓRIO EM: ${new Date().toLocaleString('pt-BR')}`;
         }
 
         function generateCardHtml(r, showActions) {
+            const tempoParado = calcularTempoParado(r.dataParada);
+            const statusParada = r.dataParada ? `
+                <div class="mt-4 p-4 rounded-xl bg-stop flex items-center gap-4">
+                    <div class="icon-box bg-red-600 text-white shadow-md shadow-red-200">
+                        <i class="fas fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <span class="data-tag-label text-red-600 block">Inatividade Total</span>
+                        <span class="text-sm font-black text-red-900">${tempoParado}</span>
+                        <p class="text-[9px] font-bold text-red-400 mt-1 uppercase">INÍCIO: ${new Date(r.dataParada).toLocaleString('pt-BR')}</p>
+                    </div>
+                </div>
+            ` : `
+                <div class="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center gap-4">
+                    <div class="icon-box bg-emerald-600 text-white">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <span class="data-tag-label text-emerald-600 block">Status Atual</span>
+                        <span class="text-xs font-black text-emerald-900 uppercase italic">Em plena operação</span>
+                    </div>
+                </div>
+            `;
+
             const actions = showActions ? `
                 <div class="flex gap-2">
-                    <button onclick="editarRegistro(${r.id})" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
-                        <i class="fas fa-pen text-xs"></i>
+                    <button onclick="editarRegistro(${r.id})" class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-amber-500 transition-all border border-white/20">
+                        <i class="fas fa-pen text-[10px]"></i>
                     </button>
-                    <button onclick="excluirRegistro(${r.id})" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all">
-                        <i class="fas fa-trash text-xs"></i>
+                    <button onclick="excluirRegistro(${r.id})" class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-all border border-white/20">
+                        <i class="fas fa-trash text-[10px]"></i>
                     </button>
                 </div>
             ` : '';
 
             return `
-                <div class="flash-card ${!showActions ? 'export-card-full mb-6' : ''}">
+                <div class="flash-card ${!showActions ? 'mb-8 border-2 border-slate-200' : ''}">
                     <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
-                        <span class="text-sm font-black uppercase tracking-widest">${r.bomba}</span>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-bore-hole text-blue-400"></i>
+                            <span class="text-sm font-black uppercase tracking-widest">${r.bomba}</span>
+                        </div>
                         ${actions}
                     </div>
                     
@@ -319,7 +431,7 @@
                             <div class="data-tag">
                                 <div class="icon-box bg-brand"><i class="fas fa-industry"></i></div>
                                 <div class="tag-content">
-                                    <span class="data-tag-label">Fabricante</span>
+                                    <span class="data-tag-label">Marca</span>
                                     <span class="data-tag-value">${r.marca}</span>
                                 </div>
                             </div>
@@ -337,14 +449,14 @@
                                 <div class="icon-box bg-power"><i class="fas fa-bolt"></i></div>
                                 <div class="tag-content">
                                     <span class="data-tag-label">Potência</span>
-                                    <span class="data-tag-value">${r.cv} Cv</span>
+                                    <span class="data-tag-value">${r.cv} CV</span>
                                 </div>
                             </div>
                             <div class="data-tag">
                                 <div class="icon-box bg-depth"><i class="fas fa-ruler-vertical"></i></div>
                                 <div class="tag-content">
                                     <span class="data-tag-label">Profundidade</span>
-                                    <span class="data-tag-value">${r.profundidade} m</span>
+                                    <span class="data-tag-value">${r.profundidade} M</span>
                                 </div>
                             </div>
                         </div>
@@ -353,9 +465,14 @@
                             <div class="icon-box bg-flow"><i class="fas fa-droplet"></i></div>
                             <div class="tag-content">
                                 <span class="data-tag-label text-blue-600">Vazão Inicial Medida</span>
-                                <span class="text-2xl font-black text-blue-900">${Number(r.vazao).toLocaleString('pt-BR')} <small class="text-xs opacity-50 font-bold uppercase">L/h</small></span>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-2xl font-black text-blue-900">${Number(r.vazao).toLocaleString('pt-BR')}</span>
+                                    <span class="text-[10px] opacity-60 font-black uppercase">L/h</span>
+                                </div>
                             </div>
                         </div>
+
+                        ${statusParada}
                     </div>
                 </div>
             `;
@@ -365,33 +482,35 @@
             if(registros.length === 0) return;
             const area = document.getElementById('exportArea');
             const canvas = await html2canvas(area, { 
-                scale: 3, 
+                scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff'
             });
 
-            if (tipo === 'jpg') {
-                const link = document.createElement('a');
-                link.download = `pocos-artesianos-oasis.jpg`;
-                link.href = canvas.toDataURL('image/jpeg', 0.9);
-                link.click();
-            }
+            const link = document.createElement('a');
+            link.download = `relatorio-pocos-oasis-${new Date().getTime()}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
         }
 
         function exportarExcel() {
             if (registros.length === 0) return;
             const ws = XLSX.utils.json_to_sheet(registros.map(r => ({
-                'POÇO': r.bomba,
+                'ID': r.bomba,
                 'MARCA': r.marca,
                 'MODELO': r.modelo,
                 'CV': r.cv,
                 'PROF. (M)': r.profundidade,
-                'VAZÃO (L/H)': r.vazao
+                'VAZÃO (L/H)': r.vazao,
+                'DATA PARADA': r.dataParada ? new Date(r.dataParada).toLocaleString('pt-BR') : 'EM OPERAÇÃO'
             })));
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Poços");
-            XLSX.writeFile(wb, `pocos-oasis.xlsx`);
+            XLSX.utils.book_append_sheet(wb, ws, "Ativos");
+            XLSX.writeFile(wb, `ativos-oasis.xlsx`);
         }
+
+        // Inicializar
+        render();
     </script>
 </body>
 </html>
